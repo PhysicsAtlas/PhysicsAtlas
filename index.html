@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Atlas | From Newton to Quarks</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --text: #334155;
+            --bg: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            background: var(--bg);
+            color: var(--text);
+            scroll-behavior: smooth;
+        }
+
+        nav {
+            width: 280px;
+            height: 100vh;
+            background: var(--primary);
+            color: white;
+            position: fixed;
+            padding: 30px 20px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        nav h2 { 
+            font-size: 1.4rem; 
+            color: var(--accent); 
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav a {
+            display: block;
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 12px 0;
+            border-bottom: 1px solid #1e293b;
+            transition: 0.3s;
+            font-size: 0.95rem;
+        }
+
+        nav a:hover { color: white; padding-left: 8px; }
+
+        main {
+            margin-left: 280px;
+            padding: 60px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            margin-bottom: 4rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 2rem;
+        }
+
+        header h1 { font-size: 3rem; color: var(--primary); margin: 0; }
+        header p { font-size: 1.2rem; color: #64748b; }
+
+        section {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        h2 { color: var(--primary); font-size: 1.8rem; margin-top: 0; }
+        
+        .tag {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .formula-box {
+            background: #f1f5f9;
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 1.2rem;
+            color: #1e293b;
+            text-align: center;
+        }
+
+        .quiz-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fdfdfd;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #cbd5e1;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s;
+        }
+
+        .quiz-option:hover { background: #f1f5f9; }
+
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            nav { display: none; }
+            main { margin-left: 0; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h2>Physics Atlas</h2>
+    <a href="#classical">1. Classical Mechanics</a>
+    <a href="#thermo">2. Thermodynamics</a>
+    <a href="#waves">3. Waves & Optics</a>
+    <a href="#electromagnetism">4. Electromagnetism</a>
+    <a href="#relativity">5. Special Relativity</a>
+    <a href="#quantum">6. Quantum Mechanics</a>
+    <a href="#particles">7. Particle Physics</a>
+</nav>
+
+<main>
+    <header>
+        <h1>Physics Encyclopedia</h1>
+        <p>A journey from the motion of planets to the vibration of subatomic strings.</p>
+    </header>
+
+    <section id="classical">
+        <span class="tag">Macroscopic World</span>
+        <h2>1. Classical Mechanics</h2>
+        <p>The study of bodies in motion and the forces acting upon them, as defined by Sir Isaac Newton.</p>
+        [attachment_0](attachment)
+        <div class="formula-box">F = m × a</div>
+        <ul>
+            <li><strong>Kinematics:</strong> Describing motion without considering its causes.</li>
+            <li><strong>Dynamics:</strong> Exploring why things move (Forces, Torque, Energy).</li>
+            <li><strong>Gravitation:</strong> Every mass attracts every other mass in the universe.</li>
+        </ul>
+    </section>
+
+    <section id="thermo">
+        <span class="tag">Energy & Heat</span>
+        <h2>2. Thermodynamics</h2>
+        <p>Focuses on how energy is transferred and how it affects matter.</p>
+        [attachment_1](attachment)
+        <p><strong>The First Law:</strong> Energy cannot be created or destroyed, only transformed.</p>
+        <div class="formula-box">ΔU = Q - W</div>
+        <p><strong>The Second Law:</strong> The total entropy (disorder) of an isolated system always increases over time.</p>
+    </section>
+
+    <section id="waves">
+        <span class="tag">Oscillations</span>
+        <h2>3. Waves & Optics</h2>
+        <p>Waves carry energy through space. Optics deals specifically with light (electromagnetic waves).</p>
+        [attachment_2](attachment)
+        <ul>
+            <li><strong>Reflection:</strong> Light bouncing off surfaces.</li>
+            <li><strong>Refraction:</strong> Light bending as it enters a new medium.</li>
+            <li><strong>Diffraction:</strong> Waves bending around corners or through slits.</li>
+        </ul>
+        <div class="formula-box">v = f × λ</div>
+    </section>
+
+    <section id="electromagnetism">
+        <span class="tag">Fields & Forces</span>
+        <h2>4. Electromagnetism</h2>
+        <p>Unified by James Clerk Maxwell, this field explains electricity, magnetism, and light.</p>
+        [attachment_3](attachment)
+        <p>Moving electric charges create magnetic fields, and changing magnetic fields create electric currents (Induction).</p>
+    </section>
+
+    <section id="relativity">
+        <span class="tag">High Velocity</span>
+        <h2>5. Special Relativity</h2>
+        <p>Proposed by Albert Einstein, it fundamentally changed our understanding of time and space.</p>
+        [attachment_4](attachment)
+        <ul>
+            <li><strong>Time Dilation:</strong> Time slows down as you move faster.</li>
+            <li><strong>Mass-Energy Equivalence:</strong> Matter can be converted into pure energy.</li>
+        </ul>
+        <div class="formula-box">E = m × c²</div>
+    </section>
+
+    <section id="quantum">
+        <span class="tag">Atomic Scale</span>
+        <h2>6. Quantum Mechanics</h2>
+        <p>In the world of atoms, things are "quantized" (broken into discrete packets) and probabilistic.</p>
+        
+        <p><strong>Wave-Particle Duality:</strong> Electrons and light behave as both particles and waves depending on how you look at them.</p>
+        <div class="formula-box">Δx Δp ≥ h / 4π</div>
+    </section>
+
+    <section id="particles">
+        <span class="tag">Fundamental Reality</span>
+        <h2>7. Particle Physics</h2>
+        <p>Investigates the building blocks of the universe using the <strong>Standard Model</strong>.</p>
+        [attachment_5](attachment)
+        <ul>
+            <li><strong>Quarks:</strong> The tiny components of Protons and Neutrons.</li>
+            <li><strong>Leptons:</strong> Including Electrons and Neutrinos.</li>
+            <li><strong>Bosons:</strong> Force carriers, like the Photon (Light) and the Higgs Boson (Mass).</li>
+        </ul>
+    </section>
+
+    <div class="quiz-container" id="quiz">
+        <h3>Quick Test:</h3>
+        <p id="question">What does "E" represent in E=mc²?</p>
+        <button class="quiz-option" onclick="checkAnswer(false)">Electric Charge</button>
+        <button class="quiz-option" onclick="checkAnswer(true)">Energy</button>
+        <button class="quiz-option" onclick="checkAnswer(false)">Entropy</button>
+        <p id="quiz-feedback" style="font-weight: bold; margin-top: 10px;"></p>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Physics Learning Portal. Knowledge is power.</p>
+    </footer>
+</main>
+
+<script>
+    function checkAnswer(isCorrect) {
+        const feedback = document.getElementById('quiz-feedback');
+        if (isCorrect) {
+            feedback.innerText = "Correct! Energy is proportional to mass.";
+            feedback.style.color = "var(--success)";
+        } else {
+            feedback.innerText = "Try again!";
+            feedback.style.color = "#ef4444";
+        }
+    }
+</script>
+
+</body>
+</html>
+
