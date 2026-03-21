@@ -3,169 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="OIvgzp_QKd0d3xJcsX3grlRAuBjDDVz2oQJOUyKPocc" />
     <title>Physics Atlas | AI Tutor</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         :root {
             --primary: #0f172a;
             --accent: #3b82f6;
-            --success: #10b981;
             --text: #334155;
             --bg: #f8fafc;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             margin: 0;
             display: flex;
             background: var(--bg);
             color: var(--text);
-            scroll-behavior: smooth;
         }
 
         #api-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            inset: 0;
             background: rgba(15, 23, 42, 0.98);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            color: white;
-            text-align: center;
+            z-index: 2000;
         }
 
         .api-modal {
             background: white;
-            padding: 40px;
-            border-radius: 16px;
-            color: var(--primary);
-            max-width: 450px;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            max-width: 400px;
             width: 90%;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            text-align: center;
         }
 
         nav {
-            width: 280px;
+            width: 260px;
             height: 100vh;
             background: var(--primary);
             color: white;
             position: fixed;
-            padding: 30px 20px;
-            overflow-y: auto;
+            padding: 2rem;
             box-sizing: border-box;
         }
 
-        nav h2 { font-size: 1.4rem; color: var(--accent); margin-bottom: 2rem; text-transform: uppercase; }
-        nav a { display: block; color: #94a3b8; text-decoration: none; padding: 12px 0; border-bottom: 1px solid #1e293b; transition: 0.3s; }
-        nav a:hover { color: white; padding-left: 8px; }
+        nav h2 { color: var(--accent); font-size: 1.2rem; margin-bottom: 2rem; }
+        nav a { 
+            display: block; 
+            color: #94a3b8; 
+            text-decoration: none; 
+            padding: 0.8rem; 
+            transition: 0.2s;
+        }
+        nav a:hover { color: white; background: rgba(255,255,255,0.05); border-radius: 5px; }
 
-        main { margin-left: 280px; padding: 60px; max-width: 900px; width: 100%; }
+        main { margin-left: 260px; padding: 4rem; width: 100%; max-width: 900px; }
 
-        section { background: white; padding: 40px; border-radius: 16px; margin-bottom: 50px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        header { margin-bottom: 3rem; }
+
+        section { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 1rem; 
+            margin-bottom: 2rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
 
         .ai-btn {
             background: var(--accent);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
             cursor: pointer;
-            font-weight: bold;
-            margin-top: 20px;
-            transition: opacity 0.2s;
+            font-weight: 600;
         }
 
-        .ai-btn:hover { opacity: 0.9; }
+        .ai-btn:disabled { opacity: 0.6; }
 
         .ai-response {
-            margin-top: 25px;
-            padding: 20px;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
             background: #f1f5f9;
             border-left: 4px solid var(--accent);
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 0.5rem 0.5rem 0;
             display: none;
-            line-height: 1.7;
             white-space: pre-wrap;
         }
 
         input[type="text"] {
             width: 100%;
-            padding: 12px;
-            margin: 15px 0;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            box-sizing: border-box;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.4rem;
         }
 
-        .loading { font-style: italic; color: var(--accent); font-weight: 500; }
-
-        @media (max-width: 768px) { nav { display: none; } main { margin-left: 0; padding: 20px; } }
+        @media (max-width: 850px) {
+            nav { display: none; }
+            main { margin-left: 0; padding: 1.5rem; }
+        }
     </style>
 </head>
 <body>
 
 <div id="api-overlay">
     <div class="api-modal">
-        <h3>Pollinations API Key</h3>
-        <p>Please enter your API Key to enable the AI Physics Tutor.</p>
-        <input type="text" id="api-key-input" placeholder="Enter Key Here...">
-        <button class="ai-btn" onclick="saveApiKey()">Activate Portal</button>
+        <h3>Atlas Access</h3>
+        <p>Enter your Pollinations API key to continue.</p>
+        <input type="text" id="api-key-input" placeholder="Your API Key...">
+        <button class="ai-btn" style="width: 100%" onclick="saveApiKey()">Enter</button>
     </div>
 </div>
 
 <nav>
-    <h2>Physics Atlas</h2>
-    <a href="#mechanics">1. Classical Mechanics</a>
-    <a href="#relativity">2. Special Relativity</a>
-    <a href="#quantum">3. Quantum Mechanics</a>
+    <h2>PHYSICS ATLAS</h2>
+    <a href="#mechanics">Mechanics</a>
+    <a href="#relativity">Relativity</a>
+    <a href="#quantum">Quantum</a>
 </nav>
 
 <main>
     <header>
         <h1>Physics AI Academy</h1>
-        <p>Master the laws of the universe with real-time AI guidance and testing.</p>
+        <p>Theoretical and practical exploration assisted by Artificial Intelligence.</p>
     </header>
 
     <section id="mechanics">
-        <h2>1. Classical Mechanics</h2>
-        <p>The foundation of physics: Motion, Forces, and Energy.</p>
-        <button class="ai-btn" onclick="askAI('Explain Newton\'s Three Laws of Motion with real-world examples and then generate a 3-question multiple-choice quiz.', 'mech-res')">Start AI Lesson & Quiz</button>
+        <h3>Classical Mechanics</h3>
+        <p>Laws of motion and energy.</p>
+        <button class="ai-btn" onclick="askAI('Explain Newton\'s Laws and provide a short quiz.', 'mech-res', this)">Start Lesson</button>
         <div id="mech-res" class="ai-response"></div>
     </section>
 
     <section id="relativity">
-        <h2>2. Special Relativity</h2>
-        <p>The curvature of spacetime and the cosmic speed limit.</p>
-        <button class="ai-btn" onclick="askAI('Explain Time Dilation and E=mc2 for a beginner. Conclude with a short test to verify my understanding.', 'rel-res')">Start AI Lesson & Quiz</button>
+        <h3>Special Relativity</h3>
+        <p>Spacetime and Einstein's relativity.</p>
+        <button class="ai-btn" onclick="askAI('Explain Time Dilation and E=mc2. End with a quiz.', 'rel-res', this)">Start Lesson</button>
         <div id="rel-res" class="ai-response"></div>
     </section>
 
     <section id="quantum">
-        <h2>3. Quantum Mechanics</h2>
-        <p>Probability and wavefunctions at the subatomic scale.</p>
-        <button class="ai-btn" onclick="askAI('Explain Wave-Particle Duality and Schrödinger\'s Cat. Include a conceptual quiz at the end.', 'q-res')">Start AI Lesson & Quiz</button>
+        <h3>Quantum Mechanics</h3>
+        <p>The subatomic world and probabilities.</p>
+        <button class="ai-btn" onclick="askAI('Explain the Uncertainty Principle and Duality. Include a quiz.', 'q-res', this)">Start Lesson</button>
         <div id="q-res" class="ai-response"></div>
     </section>
 </main>
 
 <script>
-    let API_KEY = "";
+    let API_KEY = localStorage.getItem('physics_key') || "";
+
+    if (API_KEY) document.getElementById('api-overlay').style.display = 'none';
 
     function saveApiKey() {
-        const val = document.getElementById('api-key-input').value;
-        if (val.trim().length > 0) {
+        const val = document.getElementById('api-key-input').value.trim();
+        if (val) {
             API_KEY = val;
+            localStorage.setItem('physics_key', val);
             document.getElementById('api-overlay').style.display = 'none';
-        } else {
-            alert("API Key is required.");
         }
     }
 
-    async function askAI(prompt, elementId) {
+    async function askAI(prompt, elementId, btn) {
         const display = document.getElementById(elementId);
+        const originalText = btn.innerText;
+
+        btn.disabled = true;
+        btn.innerText = "Processing...";
         display.style.display = "block";
-        display.innerHTML = "<span class='loading'>The AI is preparing your lesson and exam...</span>";
+        display.innerHTML = "<em>Loading data...</em>";
 
         try {
             const response = await fetch('https://text.pollinations.ai/openai/chat/completions', {
@@ -177,17 +188,22 @@
                 body: JSON.stringify({
                     model: "openai",
                     messages: [
-                        { role: "system", content: "You are a world-class Physics Professor. Teach the requested topic clearly and then provide a challenging quiz with answers hidden at the very bottom." },
+                        { role: "system", content: "You are a Physics Professor. Use LaTeX for formulas ($...$). Explain the topic and provide a quiz at the end." },
                         { role: "user", content: prompt }
                     ]
                 })
             });
 
             const data = await response.json();
-            const text = data.choices[0].message.content;
-            display.textContent = text;
-        } catch (error) {
-            display.innerHTML = "<span style='color:#ef4444'>Failed to connect. Check your API key or connection.</span>";
+            display.textContent = data.choices[0].message.content;
+            
+            if (window.MathJax) MathJax.typesetPromise([display]);
+
+        } catch (e) {
+            display.innerHTML = "Connection error.";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = originalText;
         }
     }
 </script>
