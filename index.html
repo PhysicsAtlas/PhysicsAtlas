@@ -4,15 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Physics Atlas | AI Tutor</title>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         :root {
             --primary: #0f172a;
             --accent: #3b82f6;
+            --accent-hover: #2563eb;
             --text: #334155;
+            --text-light: #94a3b8;
             --bg: #f8fafc;
+            --white: #ffffff;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Inter', system-ui, sans-serif;
@@ -20,12 +25,14 @@
             display: flex;
             background: var(--bg);
             color: var(--text);
+            line-height: 1.6;
         }
 
         #api-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.98);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -33,12 +40,13 @@
         }
 
         .api-modal {
-            background: white;
+            background: var(--white);
             padding: 2.5rem;
             border-radius: 1rem;
             max-width: 400px;
             width: 90%;
             text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
         nav {
@@ -48,29 +56,58 @@
             color: white;
             position: fixed;
             padding: 2rem;
-            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
 
-        nav h2 { color: var(--accent); font-size: 1.2rem; margin-bottom: 2rem; }
+        nav h2 { 
+            color: var(--accent); 
+            font-size: 1.3rem; 
+            margin-bottom: 2rem; 
+            letter-spacing: 1px;
+        }
+
         nav a { 
             display: block; 
-            color: #94a3b8; 
+            color: var(--text-light); 
             text-decoration: none; 
             padding: 0.8rem; 
-            transition: 0.2s;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            transition: 0.3s;
         }
-        nav a:hover { color: white; background: rgba(255,255,255,0.05); border-radius: 5px; }
 
-        main { margin-left: 260px; padding: 4rem; width: 100%; max-width: 900px; }
+        nav a:hover { 
+            color: white; 
+            background: rgba(255,255,255,0.05); 
+        }
 
-        header { margin-bottom: 3rem; }
+        nav .reset-btn {
+            margin-top: auto;
+            font-size: 0.75rem;
+            color: #ef4444;
+            cursor: pointer;
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        main { 
+            margin-left: 260px; 
+            padding: 4rem; 
+            width: 100%; 
+            max-width: 1000px; 
+        }
+
+        header { margin-bottom: 3.5rem; }
+        header h1 { font-size: 2.5rem; color: var(--primary); }
 
         section { 
-            background: white; 
+            background: var(--white); 
             padding: 2rem; 
             border-radius: 1rem; 
             margin-bottom: 2rem; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
         }
 
         .ai-btn {
@@ -81,18 +118,30 @@
             border-radius: 0.5rem;
             cursor: pointer;
             font-weight: 600;
+            transition: 0.2s;
         }
 
-        .ai-btn:disabled { opacity: 0.6; }
+        .ai-btn:hover { background: var(--accent-hover); }
+        .ai-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .ai-response {
             margin-top: 1.5rem;
             padding: 1.5rem;
             background: #f1f5f9;
             border-left: 4px solid var(--accent);
-            border-radius: 0 0.5rem 0.5rem 0;
+            border-radius: 0.5rem;
             display: none;
-            white-space: pre-wrap;
+        }
+
+        .loading-text {
+            color: var(--accent);
+            font-weight: 600;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         input[type="text"] {
@@ -101,9 +150,12 @@
             margin: 1rem 0;
             border: 1px solid #e2e8f0;
             border-radius: 0.4rem;
+            outline: none;
         }
 
-        @media (max-width: 850px) {
+        input[type="text"]:focus { border-color: var(--accent); }
+
+        @media (max-width: 900px) {
             nav { display: none; }
             main { margin-left: 0; padding: 1.5rem; }
         }
@@ -116,7 +168,7 @@
         <h3>Atlas Access</h3>
         <p>Enter your Pollinations API key to continue.</p>
         <input type="text" id="api-key-input" placeholder="Your API Key...">
-        <button class="ai-btn" style="width: 100%" onclick="saveApiKey()">Enter</button>
+        <button class="ai-btn" style="width: 100%" onclick="saveApiKey()">Enter Academy</button>
     </div>
 </div>
 
@@ -125,6 +177,7 @@
     <a href="#mechanics">Mechanics</a>
     <a href="#relativity">Relativity</a>
     <a href="#quantum">Quantum</a>
+    <div class="reset-btn" onclick="clearKey()">Reset API Key</div>
 </nav>
 
 <main>
@@ -135,22 +188,22 @@
 
     <section id="mechanics">
         <h3>Classical Mechanics</h3>
-        <p>Laws of motion and energy.</p>
-        <button class="ai-btn" onclick="askAI('Explain Newton\'s Laws and provide a short quiz.', 'mech-res', this)">Start Lesson</button>
+        <p>Laws of motion, energy, and Newtonian physics.</p>
+        <button class="ai-btn" onclick="askAI('Explain Newton\'s Laws with LaTeX formulas. End with a 3-question quiz.', 'mech-res', this)">Start Lesson</button>
         <div id="mech-res" class="ai-response"></div>
     </section>
 
     <section id="relativity">
         <h3>Special Relativity</h3>
-        <p>Spacetime and Einstein's relativity.</p>
-        <button class="ai-btn" onclick="askAI('Explain Time Dilation and E=mc2. End with a quiz.', 'rel-res', this)">Start Lesson</button>
+        <p>Spacetime, time dilation, and Einstein's equations.</p>
+        <button class="ai-btn" onclick="askAI('Explain Time Dilation and E=mc^2 using LaTeX. End with a short quiz.', 'rel-res', this)">Start Lesson</button>
         <div id="rel-res" class="ai-response"></div>
     </section>
 
     <section id="quantum">
         <h3>Quantum Mechanics</h3>
-        <p>The subatomic world and probabilities.</p>
-        <button class="ai-btn" onclick="askAI('Explain the Uncertainty Principle and Duality. Include a quiz.', 'q-res', this)">Start Lesson</button>
+        <p>The subatomic world, wave-particle duality, and probabilities.</p>
+        <button class="ai-btn" onclick="askAI('Explain the Uncertainty Principle and Duality using LaTeX. Include a quiz.', 'q-res', this)">Start Lesson</button>
         <div id="q-res" class="ai-response"></div>
     </section>
 </main>
@@ -169,6 +222,11 @@
         }
     }
 
+    function clearKey() {
+        localStorage.removeItem('physics_key');
+        location.reload();
+    }
+
     async function askAI(prompt, elementId, btn) {
         const display = document.getElementById(elementId);
         const originalText = btn.innerText;
@@ -176,7 +234,7 @@
         btn.disabled = true;
         btn.innerText = "Processing...";
         display.style.display = "block";
-        display.innerHTML = "<em>Loading data...</em>";
+        display.innerHTML = "<div class='loading-text'>Consulting the Atlas...</div>";
 
         try {
             const response = await fetch('https://text.pollinations.ai/openai/chat/completions', {
@@ -188,19 +246,28 @@
                 body: JSON.stringify({
                     model: "openai",
                     messages: [
-                        { role: "system", content: "You are a Physics Professor. Use LaTeX for formulas ($...$). Explain the topic and provide a quiz at the end." },
+                        { 
+                            role: "system", 
+                            content: "You are a Physics Professor. Use Markdown for formatting and LaTeX for formulas ($...$ or $$...$$). Provide clear explanations and a quiz." 
+                        },
                         { role: "user", content: prompt }
                     ]
                 })
             });
 
+            if (!response.ok) throw new Error();
+
             const data = await response.json();
-            display.textContent = data.choices[0].message.content;
+            const content = data.choices[0].message.content;
+
+            display.innerHTML = marked.parse(content);
             
-            if (window.MathJax) MathJax.typesetPromise([display]);
+            if (window.MathJax) {
+                MathJax.typesetPromise([display]).catch(err => console.log(err));
+            }
 
         } catch (e) {
-            display.innerHTML = "Connection error.";
+            display.innerHTML = "<strong>Error:</strong> Connection failed. Please check your API key.";
         } finally {
             btn.disabled = false;
             btn.innerText = originalText;
