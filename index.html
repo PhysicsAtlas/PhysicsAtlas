@@ -6,33 +6,36 @@
     <title>Physics Atlas | AI Tutor</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --primary: #0f172a;
             --accent: #3b82f6;
             --accent-hover: #2563eb;
             --text: #334155;
-            --text-light: #94a3b8;
-            --bg: #f8fafc;
+            --text-light: #64748b;
+            --bg: #f1f5f9;
             --white: #ffffff;
+            --border: #e2e8f0;
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
             display: flex;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.6;
+            min-height: 100vh;
         }
 
         #api-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(12px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -42,122 +45,154 @@
         .api-modal {
             background: var(--white);
             padding: 2.5rem;
-            border-radius: 1rem;
-            max-width: 400px;
+            border-radius: 1.5rem;
+            max-width: 450px;
             width: 90%;
             text-align: center;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         nav {
-            width: 260px;
-            height: 100vh;
+            width: 280px;
             background: var(--primary);
             color: white;
             position: fixed;
+            height: 100vh;
             padding: 2rem;
             display: flex;
             flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
         }
 
         nav h2 { 
             color: var(--accent); 
-            font-size: 1.3rem; 
-            margin-bottom: 2rem; 
-            letter-spacing: 1px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         nav a { 
-            display: block; 
-            color: var(--text-light); 
+            color: #cbd5e1;
             text-decoration: none; 
-            padding: 0.8rem; 
+            padding: 1rem; 
             margin-bottom: 0.5rem;
-            border-radius: 0.5rem;
-            transition: 0.3s;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
         }
 
         nav a:hover { 
-            color: white; 
-            background: rgba(255,255,255,0.05); 
+            background: rgba(255,255,255,0.1); 
+            color: white;
+            transform: translateX(5px);
         }
 
-        nav .reset-btn {
+        .reset-btn {
             margin-top: auto;
-            font-size: 0.75rem;
-            color: #ef4444;
+            padding: 0.8rem;
+            font-size: 0.8rem;
+            color: #f87171;
             cursor: pointer;
+            border: 1px solid #f8717133;
+            border-radius: 0.5rem;
             text-align: center;
-            opacity: 0.7;
         }
 
         main { 
-            margin-left: 260px; 
-            padding: 4rem; 
-            width: 100%; 
-            max-width: 1000px; 
+            margin-left: 280px; 
+            padding: 4rem 2rem; 
+            width: 100%;
+            max-width: 1100px;
         }
 
-        header { margin-bottom: 3.5rem; }
-        header h1 { font-size: 2.5rem; color: var(--primary); }
+        header { margin-bottom: 4rem; }
+        header h1 { font-size: 3rem; color: var(--primary); margin: 0; }
+        header p { font-size: 1.1rem; color: var(--text-light); }
 
         section { 
             background: var(--white); 
-            padding: 2rem; 
-            border-radius: 1rem; 
-            margin-bottom: 2rem; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
+            padding: 2.5rem; 
+            border-radius: 1.25rem; 
+            margin-bottom: 2.5rem; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
         }
+
+        section h3 { margin-top: 0; font-size: 1.5rem; color: var(--primary); }
 
         .ai-btn {
             background: var(--accent);
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 0.5rem;
+            padding: 0.9rem 2rem;
+            border-radius: 0.75rem;
             cursor: pointer;
             font-weight: 600;
-            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .ai-btn:hover { background: var(--accent-hover); }
-        .ai-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .ai-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .ai-btn:disabled { background: var(--text-light); cursor: not-allowed; transform: none; }
 
         .ai-response {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            background: #f1f5f9;
-            border-left: 4px solid var(--accent);
-            border-radius: 0.5rem;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: #fafafa;
+            border-radius: 1rem;
+            border-left: 5px solid var(--accent);
             display: none;
+            overflow-x: auto;
         }
 
-        .loading-text {
+        .ai-response h1, .ai-response h2 { color: var(--primary); }
+        .ai-response code { background: #e2e8f0; padding: 0.2rem 0.4rem; border-radius: 4px; }
+        .ai-response blockquote { border-left: 4px solid #cbd5e1; padding-left: 1rem; font-style: italic; }
+
+        .loading-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
             color: var(--accent);
             font-weight: 600;
-            animation: pulse 1.5s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e2e8f0;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         input[type="text"] {
             width: 100%;
-            padding: 0.8rem;
-            margin: 1rem 0;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.4rem;
-            outline: none;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            font-size: 1rem;
         }
 
-        input[type="text"]:focus { border-color: var(--accent); }
+        input[type="text"]:focus { border-color: var(--accent); outline: none; }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
+            nav { width: 80px; padding: 1rem; }
+            nav h2, nav a span { display: none; }
+            main { margin-left: 80px; }
+        }
+
+        @media (max-width: 640px) {
             nav { display: none; }
-            main { margin-left: 0; padding: 1.5rem; }
+            main { margin-left: 0; padding: 2rem 1rem; }
+            header h1 { font-size: 2.0rem; }
         }
     </style>
 </head>
@@ -165,45 +200,53 @@
 
 <div id="api-overlay">
     <div class="api-modal">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">⚛️</div>
         <h3>Atlas Access</h3>
-        <p>Enter your Pollinations API key to continue.</p>
-        <input type="text" id="api-key-input" placeholder="Your API Key...">
-        <button class="ai-btn" style="width: 100%" onclick="saveApiKey()">Enter Academy</button>
+        <p>Please enter your API key to begin the scientific journey.</p>
+        <input type="text" id="api-key-input" placeholder="sk-..." onkeypress="if(event.key==='Enter') saveApiKey()">
+        <button class="ai-btn" style="width: 100%; justify-content: center;" onclick="saveApiKey()">Enter Academy</button>
     </div>
 </div>
 
 <nav>
-    <h2>PHYSICS ATLAS</h2>
-    <a href="#mechanics">Mechanics</a>
-    <a href="#relativity">Relativity</a>
-    <a href="#quantum">Quantum</a>
+    <h2>⚛️ <span>ATLAS</span></h2>
+    <a href="#mechanics"><span>Mechanics</span></a>
+    <a href="#relativity"><span>Relativity</span></a>
+    <a href="#quantum"><span>Quantum</span></a>
+    
     <div class="reset-btn" onclick="clearKey()">Reset API Key</div>
 </nav>
 
 <main>
     <header>
-        <h1>Physics AI Academy</h1>
-        <p>Theoretical and practical exploration assisted by Artificial Intelligence.</p>
+        <h1>Physics Academy</h1>
+        <p>Advanced theoretical exploration assisted by Artificial Intelligence.</p>
     </header>
 
     <section id="mechanics">
         <h3>Classical Mechanics</h3>
-        <p>Laws of motion, energy, and Newtonian physics.</p>
-        <button class="ai-btn" onclick="askAI('Explain Newton\'s Laws with LaTeX formulas. End with a 3-question quiz.', 'mech-res', this)">Start Lesson</button>
+        <p>The study of motion, forces, and energy in the macroscopic world.</p>
+        <button class="ai-btn" onclick="askAI('Explain Newton\'s Laws in detail. Use LaTeX for formulas. End with a 3-question quiz.', 'mech-res', this)">
+            Start Lesson
+        </button>
         <div id="mech-res" class="ai-response"></div>
     </section>
 
     <section id="relativity">
         <h3>Special Relativity</h3>
-        <p>Spacetime, time dilation, and Einstein's equations.</p>
-        <button class="ai-btn" onclick="askAI('Explain Time Dilation and E=mc^2 using LaTeX. End with a short quiz.', 'rel-res', this)">Start Lesson</button>
+        <p>Space-time, time dilation, and the famous mass-energy equivalence.</p>
+        <button class="ai-btn" onclick="askAI('Explain Time Dilation and E=mc^2. Use LaTeX for equations. End with a quiz.', 'rel-res', this)">
+            Start Lesson
+        </button>
         <div id="rel-res" class="ai-response"></div>
     </section>
 
     <section id="quantum">
         <h3>Quantum Mechanics</h3>
-        <p>The subatomic world, wave-particle duality, and probabilities.</p>
-        <button class="ai-btn" onclick="askAI('Explain the Uncertainty Principle and Duality using LaTeX. Include a quiz.', 'q-res', this)">Start Lesson</button>
+        <p>Particles, waves, and the probabilities of the subatomic world.</p>
+        <button class="ai-btn" onclick="askAI('Explain the Heisenberg Uncertainty Principle and Wave-Particle Duality using LaTeX. End with a quiz.', 'q-res', this)">
+            Start Lesson
+        </button>
         <div id="q-res" class="ai-response"></div>
     </section>
 </main>
@@ -215,26 +258,34 @@
 
     function saveApiKey() {
         const val = document.getElementById('api-key-input').value.trim();
-        if (val) {
+        if (val.length > 5) {
             API_KEY = val;
             localStorage.setItem('physics_key', val);
             document.getElementById('api-overlay').style.display = 'none';
+        } else {
+            alert("Please enter a valid key.");
         }
     }
 
     function clearKey() {
-        localStorage.removeItem('physics_key');
-        location.reload();
+        if(confirm("Are you sure you want to remove the API key?")) {
+            localStorage.removeItem('physics_key');
+            location.reload();
+        }
     }
 
     async function askAI(prompt, elementId, btn) {
         const display = document.getElementById(elementId);
-        const originalText = btn.innerText;
+        const originalContent = btn.innerHTML;
 
         btn.disabled = true;
-        btn.innerText = "Processing...";
+        btn.innerHTML = `<div class="spinner"></div> Processing...`;
         display.style.display = "block";
-        display.innerHTML = "<div class='loading-text'>Consulting the Atlas...</div>";
+        display.innerHTML = `
+            <div class="loading-container">
+                <div class="spinner"></div>
+                <span>Consulting the Physics Atlas...</span>
+            </div>`;
 
         try {
             const response = await fetch('https://text.pollinations.ai/openai/chat/completions', {
@@ -248,14 +299,14 @@
                     messages: [
                         { 
                             role: "system", 
-                            content: "You are a Physics Professor. Use Markdown for formatting and LaTeX for formulas ($...$ or $$...$$). Provide clear explanations and a quiz." 
+                            content: "You are a renowned Physics Professor. Use Markdown for headings, lists, and bold text. Use LaTeX strictly for ALL mathematical formulas using $ delimiters for inline and $$ for blocks. Be educational and profound." 
                         },
                         { role: "user", content: prompt }
                     ]
                 })
             });
 
-            if (!response.ok) throw new Error();
+            if (!response.ok) throw new Error("Authentication or network failure.");
 
             const data = await response.json();
             const content = data.choices[0].message.content;
@@ -263,14 +314,18 @@
             display.innerHTML = marked.parse(content);
             
             if (window.MathJax) {
-                MathJax.typesetPromise([display]).catch(err => console.log(err));
+                await MathJax.typesetPromise([display]);
             }
 
         } catch (e) {
-            display.innerHTML = "<strong>Error:</strong> Connection failed. Please check your API key.";
+            display.innerHTML = `
+                <div style="color: #ef4444; border: 1px solid #ef444433; padding: 1rem; border-radius: 0.5rem;">
+                    <strong>Error:</strong> Could not retrieve a response. 
+                    Please check your API key or connection.
+                </div>`;
         } finally {
             btn.disabled = false;
-            btn.innerText = originalText;
+            btn.innerHTML = originalContent;
         }
     }
 </script>
